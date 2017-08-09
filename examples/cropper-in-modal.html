@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Cropper</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../dist/cropper.css">
+  <style>
+    img {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-target="#modal" data-toggle="modal">
+      添加一个图片
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modal" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel">Crop the image</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <div class="img_box">
+              <img id="image" src="../docs/images/picture.jpg" alt="Picture">
+            </div>
+            <input name="imgfile" type="file" style="display:none">
+          </div>
+          <div class="modal-footer">
+
+            <button type="button" class="btn btn-default" onclick="changeimg(this)">选择图片</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-default" onclick="saveimg(this)">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+  <script src="../dist/cropper.js"></script>
+  <script>
+    $(function () {
+      var $image = $('#image');
+      var cropBoxData;
+      var canvasData;
+
+      $('#modal').on('shown.bs.modal', function () {
+        $image.cropper({
+          autoCropArea: 0.5,
+          ready: function () {
+            $image.cropper('setCanvasData', canvasData);
+            $image.cropper('setCropBoxData', cropBoxData);
+          }
+        });
+      }).on('hidden.bs.modal', function () {
+        cropBoxData = $image.cropper('getCropBoxData');
+        canvasData = $image.cropper('getCanvasData');
+        $image.cropper('destroy');
+      });
+    });
+
+    function changeimg(obj){
+      var imgfile = $(obj).parent().siblings(".modal-body").find("input[name=imgfile]");
+      imgfile.trigger("click");
+    }
+
+    $("input[name=imgfile]").change(function() {
+      return change(this, 'file-one');
+    });
+
+    //插入图片
+    function change(obj, itemId) {
+      var a = URL.createObjectURL(obj.files[0]);
+      var urla = obj.files[0];
+      var template = '<img src="'+a+'" height="100%" >图片有吗';
+      $('.img_box').html(template.replace('{src}', URL.createObjectURL(obj.files[0])));
+    }
+
+    //    function getRoundedCanvas(sourceCanvas) {
+//      var canvas = document.createElement('canvas');
+//      var context = canvas.getContext('2d');
+//      var width = sourceCanvas.width;
+//      var height = sourceCanvas.height;
+//      console.log(width+"<br>"+height);
+//
+//      canvas.width = width;
+//      canvas.height = height;
+//      context.beginPath();
+//      context.arc(width / 2, height / 2, Math.min(width, height) / 2, 0, 2 * Math.PI);
+//      context.strokeStyle = 'rgba(0,0,0,0)';
+//      context.stroke();
+//      context.clip();
+//      context.drawImage(sourceCanvas, 0, 0, width, height);
+//
+//      return canvas;
+//    }
+//
+//    $(function () {
+//      var $image = $('#image');
+//      var $button = $('#button');
+//      var $result = $('#result');
+//      var croppable = false;
+//
+//      $image.cropper({
+//        aspectRatio: 1,
+//        viewMode: 1,
+//        ready: function () {
+//          croppable = true;
+//        }
+//      });
+//
+//      $button.on('click', function () {
+//        var croppedCanvas;
+//        var roundedCanvas;
+//
+//        if (!croppable) {
+//          return;
+//        }
+//
+//        // Crop
+//        croppedCanvas = $image.cropper('getCroppedCanvas');
+//
+//        // Round
+//        roundedCanvas = getRoundedCanvas(croppedCanvas);
+//
+//        // Show
+//        $result.html('<img src="' + roundedCanvas.toDataURL() + '">');
+//      });
+//    });
+  </script>
+</body>
+</html>
